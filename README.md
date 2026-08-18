@@ -43,7 +43,7 @@ See [`SCORING.md`](./SCORING.md) for the full risk-scoring methodology and the r
 ## Setup
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/bk-ml/supply-chain-risk-mcp
 cd supply-chain-risk-mcp
 
 python3 -m venv .venv
