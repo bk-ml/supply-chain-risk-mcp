@@ -10,6 +10,12 @@ dependencies = [
     "python-dotenv>=1.0.0",
 ]
 
+[project.optional-dependencies]
+agents = [
+    "groq",                 # if using Groq backend
+    "google-generativeai",  # if using Gemini backend
+]
+
 [project.scripts]
 supply-chain-risk-mcp = "server:main"
 
@@ -18,7 +24,7 @@ asyncio_mode = "auto"
 pythonpath = ["."]
 
 [tool.setuptools]
-packages = ["clients", "logic"]
+packages = ["clients", "logic", "agents", "orchestration", "evals"]
 py-modules = ["server"]
 
 [build-system]
