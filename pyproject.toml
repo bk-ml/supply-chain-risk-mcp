@@ -12,8 +12,7 @@ dependencies = [
 
 [project.optional-dependencies]
 agents = [
-    "groq",                 # if using Groq backend
-    "google-generativeai",  # if using Gemini backend
+    "google-genai",
 ]
 
 [project.scripts]
