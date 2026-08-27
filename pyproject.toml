@@ -21,6 +21,9 @@ supply-chain-risk-mcp = "server:main"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 pythonpath = ["."]
+markers = [
+    "integration: slow tests that spawn real processes and hit live network APIs",
+]
 
 [tool.setuptools]
 packages = ["clients", "logic", "agents", "orchestration", "evals"]

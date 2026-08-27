@@ -60,6 +60,12 @@ class PRDiffInput(BaseModel):
 
     changed_files: list[str] = Field(default_factory=list)
 
+    project_license: str = "MIT"
+    """The consuming project's own license (SPDX identifier), required by
+    get_risk_score for license-conflict checking. Caller-supplied rather than
+    defaulted silently — real PR context should know this. Defaults to MIT
+    only as a fallback for synthetic/test diffs that don't specify one."""
+
 
 # ---------------------------------------------------------------------------
 # Triage Agent output
@@ -142,4 +148,4 @@ class SynthesisOutput(BaseModel):
     raw_agent_trace_id: str = Field(default_factory=lambda: str(uuid4()))
     """Ties this output back to the structured log for this run (Step 5.1)."""
 
-    generated_at: datetime = Field(default_factory=datetime.utcnow)
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
