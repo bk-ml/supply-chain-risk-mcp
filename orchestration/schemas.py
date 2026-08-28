@@ -132,6 +132,7 @@ class SynthesisRiskLevel(str, Enum):
     HIGH = "HIGH"
     CRITICAL = "CRITICAL"
     UNABLE_TO_ASSESS = "UNABLE_TO_ASSESS"
+    NOT_APPLICABLE = "NOT_APPLICABLE"
 
 
 class SynthesisOutput(BaseModel):
