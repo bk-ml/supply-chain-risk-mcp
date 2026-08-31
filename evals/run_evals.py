@@ -83,6 +83,26 @@ def _check_case(case: EvalCase, output, triage_result) -> dict:
     return checks
 
 
+def _is_quota_exhaustion_text(text: str) -> bool:
+    """Heuristic: detect a full daily-quota exhaustion from raw text —
+    either a raised exception's message, OR (more commonly, given this
+    codebase's design) text embedded in a TriageResult.reasoning field,
+    since TriageAgent/SynthesisAgent deliberately swallow LLMBackendError
+    internally rather than letting it propagate as an exception. String
+    matching is fragile but this is the information actually available
+    without changing the agents' own fail-safe error handling."""
+    if not text:
+        return False
+    lowered = text.lower()
+    return "resource_exhausted" in lowered or "quota" in lowered
+
+
+class QuotaExhaustedError(Exception):
+    """Raised internally to stop the run loop early, distinct from a real
+    per-case failure — the case that triggered this should NOT get a result
+    file written, so it remains eligible to run cleanly next time."""
+
+
 async def _run_one_case(case: EvalCase, orchestrator: Orchestrator) -> dict:
     start = time.monotonic()
     result_record: dict = {
@@ -114,12 +134,25 @@ async def _run_one_case(case: EvalCase, orchestrator: Orchestrator) -> dict:
     triage_result = None
     try:
         output, triage_result = await orchestrator.run(pr_diff)
+
+        # TriageAgent and SynthesisAgent both deliberately swallow
+        # LLMBackendError internally (fail-safe design from Steps 2.1/2.3)
+        # rather than raising — so quota exhaustion never reaches this
+        # try/except as an exception. It surfaces instead as a real-looking
+        # but bogus TriageResult (confidence=0.0, reasoning mentioning the
+        # failure). Detect it there instead.
+        if triage_result is not None and _is_quota_exhaustion_text(triage_result.reasoning):
+            raise QuotaExhaustedError(triage_result.reasoning)
+
         result_record["output"] = output.model_dump(mode="json")
         result_record["checks"] = _check_case(case, output, triage_result)
         result_record["passed"] = all(result_record["checks"].values()) if result_record["checks"] else None
         result_record["error"] = None
 
     except (LLMBackendError, MCPTransportError) as e:
+        if isinstance(e, LLMBackendError) and _is_quota_exhaustion_text(str(e)):
+            raise QuotaExhaustedError(str(e)) from e
+
         result_record["output"] = None
         result_record["checks"] = {}
         result_record["passed"] = False
@@ -165,7 +198,16 @@ async def main():
             continue
 
         print(f"[run]  {case.id} ({case.description})")
-        result = await _run_one_case(case, orchestrator)
+        try:
+            result = await _run_one_case(case, orchestrator)
+        except QuotaExhaustedError as e:
+            print(f"\n[STOPPED] Daily quota exhausted while running '{case.id}'.")
+            print(f"          {e}")
+            print(f"          '{case.id}' was NOT marked complete — it will run "
+                  f"again on the next invocation once quota resets.")
+            print(f"          Re-run this script after quota resets to continue.")
+            break
+
         result_path.write_text(json.dumps(result, indent=2, default=str))
 
         status = "PASS" if result["passed"] else "FAIL"
