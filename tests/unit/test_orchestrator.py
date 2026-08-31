@@ -47,9 +47,10 @@ async def test_no_relevant_changes_short_circuits_before_research_and_synthesis(
     synthesis = AsyncMock()
 
     orchestrator = Orchestrator(triage, research, synthesis)
-    output = await orchestrator.run(_diff())
+    output, triage_result = await orchestrator.run(_diff())
 
     assert output.risk_level == SynthesisRiskLevel.NOT_APPLICABLE
+    assert triage_result.intent == TriageIntent.NO_RELEVANT_CHANGES
     research.run.assert_not_called()
     synthesis.run.assert_not_called()
 
@@ -66,11 +67,12 @@ async def test_low_confidence_short_circuits_to_unable_to_assess():
     synthesis = AsyncMock()
 
     orchestrator = Orchestrator(triage, research, synthesis)
-    output = await orchestrator.run(_diff())
+    output, triage_result = await orchestrator.run(_diff())
 
     assert output.risk_level == SynthesisRiskLevel.UNABLE_TO_ASSESS
     assert output.unable_to_assess is True
     assert "left-pad" in output.affected_packages
+    assert triage_result.confidence == 0.2
     research.run.assert_not_called()
     synthesis.run.assert_not_called()
 
@@ -104,8 +106,9 @@ async def test_confident_relevant_change_calls_research_and_synthesis_in_order(m
     mocker.patch("orchestration.orchestrator.MCPToolClient", return_value=fake_mcp_client_cm)
 
     orchestrator = Orchestrator(triage, research, synthesis)
-    output = await orchestrator.run(_diff())
+    output, returned_triage_result = await orchestrator.run(_diff())
 
     assert output.risk_level == SynthesisRiskLevel.LOW
+    assert returned_triage_result is triage_result
     research.run.assert_called_once()
     synthesis.run.assert_called_once_with(triage_result, research_result)

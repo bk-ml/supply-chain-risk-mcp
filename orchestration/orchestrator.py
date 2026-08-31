@@ -60,7 +60,7 @@ class Orchestrator:
         self._synthesis_agent = synthesis_agent
         self._confidence_threshold = confidence_threshold
 
-    async def run(self, pr_diff: PRDiffInput) -> SynthesisOutput:
+    async def run(self, pr_diff: PRDiffInput) -> tuple[SynthesisOutput, TriageResult]:
         triage_result = await self._triage_agent.run(pr_diff)
         logger.info(
             "Triage: intent=%s confidence=%.2f packages=%d",
@@ -73,7 +73,7 @@ class Orchestrator:
                 risk_level=SynthesisRiskLevel.NOT_APPLICABLE,
                 affected_packages=[],
                 recommendation="No dependency-relevant changes detected in this PR.",
-            )
+            ), triage_result
 
         # Short-circuit 2: low-confidence refusal path.
         if triage_result.confidence < self._confidence_threshold:
@@ -86,7 +86,7 @@ class Orchestrator:
                     f"Triage confidence {triage_result.confidence:.2f} below "
                     f"threshold {self._confidence_threshold:.2f}"
                 ),
-            )
+            ), triage_result
 
         async with MCPToolClient() as mcp_client:
             research_result = await self._research_agent.run(triage_result, pr_diff, mcp_client)
@@ -96,4 +96,4 @@ class Orchestrator:
         synthesis_output = await self._synthesis_agent.run(triage_result, research_result)
         logger.info("Synthesis: risk_level=%s", synthesis_output.risk_level)
 
-        return synthesis_output
+        return synthesis_output, triage_result

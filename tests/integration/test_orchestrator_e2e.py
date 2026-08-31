@@ -66,12 +66,13 @@ async def test_full_chain_end_to_end_via_real_orchestrator(orchestrator):
         diff_text=VERSION_BUMP_DIFF, changed_files=["package.json"], project_license="MIT",
     )
 
-    output = await orchestrator.run(pr_diff)
+    output, triage_result = await orchestrator.run(pr_diff)
 
     assert output.risk_level == SynthesisRiskLevel.HIGH
     assert "lodash" in output.affected_packages
     assert output.unable_to_assess is False
     assert len(output.recommendation) > 0
+    assert triage_result.intent.value == "version_bump"
 
 
 @pytest.mark.asyncio
@@ -88,7 +89,7 @@ async def test_no_relevant_changes_short_circuits_with_real_agents(orchestrator,
         diff_text=NO_RELEVANT_CHANGES_DIFF, changed_files=["src/utils.js"], project_license="MIT",
     )
 
-    output = await orchestrator.run(pr_diff)
+    output, triage_result = await orchestrator.run(pr_diff)
 
     assert output.risk_level == SynthesisRiskLevel.NOT_APPLICABLE
     mcp_spy.assert_not_called()
