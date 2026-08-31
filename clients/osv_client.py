@@ -5,6 +5,31 @@ from pydantic import BaseModel
 
 OSV_API_URL = "https://api.osv.dev/v1/query"
 
+# OSV.dev requires exact, case-sensitive ecosystem strings that do NOT follow
+# a simple case convention — e.g. PyPI is capitalized exactly that way, and
+# Rust uses "crates.io", not any variant of "cargo". This maps our internal
+# ecosystem names (matching PackageRef's Literal in orchestration/schemas.py:
+# npm/pypi/cargo/maven) to OSV's real canonical strings. Confirmed against
+# the official ossf/osv-schema ecosystem list — npm happens to already match
+# by coincidence, which is why this gap went unnoticed until pypi/cargo/maven
+# packages were actually queried against the live API (this client's own
+# unit tests mock the HTTP call, so they never exercised OSV's real
+# ecosystem-string validation).
+_ECOSYSTEM_TO_OSV = {
+    "npm": "npm",
+    "pypi": "PyPI",
+    "cargo": "crates.io",
+    "maven": "Maven",
+}
+
+
+def _normalize_ecosystem_for_osv(ecosystem: str) -> str:
+    """Translate our internal ecosystem name to OSV.dev's exact canonical
+    string. Falls back to the input unchanged if unrecognized, so a genuinely
+    unsupported ecosystem still reaches OSV.dev and gets OSV's own error
+    response rather than being silently swallowed here."""
+    return _ECOSYSTEM_TO_OSV.get(ecosystem.lower(), ecosystem)
+
 
 class OSVClientError(Exception):
     """Base exception for all OSV client errors."""
@@ -67,7 +92,8 @@ async def query_vulnerabilities(
         RateLimitError: OSV.dev rate limit hit.
         OSVAPIError: any other unexpected failure.
     """
-    body: dict = {"package": {"name": package, "ecosystem": ecosystem}}
+    osv_ecosystem = _normalize_ecosystem_for_osv(ecosystem)
+    body: dict = {"package": {"name": package, "ecosystem": osv_ecosystem}}
     if version:
         body["version"] = version
 
@@ -100,6 +126,10 @@ async def query_vulnerabilities(
             )
         )
 
+    # Preserve the caller's original ecosystem string in the result (not
+    # OSV's translated one) — the result should reflect our own naming
+    # convention consistently, since that's what the rest of the system
+    # (PackageRef, Research/Synthesis Agents) expects to see.
     return VulnQueryResult(
         package=package, ecosystem=ecosystem, version=version, vulnerabilities=vulns
     )
