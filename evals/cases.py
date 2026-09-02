@@ -60,16 +60,16 @@ CASES: list[EvalCase] = [
         est_llm_calls=2,
         repo_owner="lodash", repo_name="lodash",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/package.json
-@@ -10,7 +10,7 @@
-   "dependencies": {
-     "express": "^4.18.2",
--    "lodash": "^4.17.20",
-+    "lodash": "^4.17.21",
-   }
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -10,7 +10,7 @@
+            "dependencies": {
+                "express": "^4.18.2",
+            -    "lodash": "^4.17.20",
+            +    "lodash": "^4.17.21",
+            }
+            """,
         changed_files=["package.json"],
         expect_intent_in=["version_bump"],
         expect_unable_to_assess=False,
@@ -84,15 +84,15 @@ index 1234567..89abcde 100644
         est_llm_calls=2,
         repo_owner="expressjs", repo_name="express",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/package.json
-@@ -10,7 +10,7 @@
-   "dependencies": {
--    "express": "^4.18.1",
-+    "express": "^4.18.2",
-   }
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -10,7 +10,7 @@
+            "dependencies": {
+            -    "express": "^4.18.1",
+            +    "express": "^4.18.2",
+            }
+            """,
         changed_files=["package.json"],
         expect_intent_in=["version_bump"],
         expect_unable_to_assess=False,
@@ -110,14 +110,14 @@ index 1234567..89abcde 100644
         est_llm_calls=2,
         repo_owner="pallets", repo_name="flask",
         diff_text="""diff --git a/requirements.txt b/requirements.txt
-index 1111111..2222222 100644
---- a/requirements.txt
-+++ b/requirements.txt
-@@ -3,3 +3,4 @@ flask==2.3.2
- requests==2.31.0
- sqlalchemy==2.0.19
-+pyjwt==2.8.0
-""",
+            index 1111111..2222222 100644
+            --- a/requirements.txt
+            +++ b/requirements.txt
+            @@ -3,3 +3,4 @@ flask==2.3.2
+            requests==2.31.0
+            sqlalchemy==2.0.19
+            +pyjwt==2.8.0
+            """,
         changed_files=["requirements.txt"],
         expect_intent_in=["new_dependency"],
         expect_min_affected_packages=1,
@@ -130,14 +130,14 @@ index 1111111..2222222 100644
         est_llm_calls=2,
         repo_owner="rust-lang", repo_name="cargo",
         diff_text="""diff --git a/Cargo.toml b/Cargo.toml
-index 1111111..2222222 100644
---- a/Cargo.toml
-+++ b/Cargo.toml
-@@ -5,3 +5,4 @@
- [dependencies]
- serde = "1.0"
-+rand = "0.8"
-""",
+            index 1111111..2222222 100644
+            --- a/Cargo.toml
+            +++ b/Cargo.toml
+            @@ -5,3 +5,4 @@
+            [dependencies]
+            serde = "1.0"
+            +rand = "0.8"
+            """,
         changed_files=["Cargo.toml"],
         expect_intent_in=["new_dependency"],
         expect_min_affected_packages=1,
@@ -150,18 +150,18 @@ index 1111111..2222222 100644
         est_llm_calls=2,
         repo_owner="apache", repo_name="maven",
         diff_text="""diff --git a/pom.xml b/pom.xml
-index 1111111..2222222 100644
---- a/pom.xml
-+++ b/pom.xml
-@@ -20,5 +20,9 @@
-   <dependencies>
-+    <dependency>
-+      <groupId>com.google.guava</groupId>
-+      <artifactId>guava</artifactId>
-+      <version>32.1.2-jre</version>
-+    </dependency>
-   </dependencies>
-""",
+            index 1111111..2222222 100644
+            --- a/pom.xml
+            +++ b/pom.xml
+            @@ -20,5 +20,9 @@
+            <dependencies>
+            +    <dependency>
+            +      <groupId>com.google.guava</groupId>
+            +      <artifactId>guava</artifactId>
+            +      <version>32.1.2-jre</version>
+            +    </dependency>
+            </dependencies>
+            """,
         changed_files=["pom.xml"],
         expect_intent_in=["new_dependency"],
         expect_min_affected_packages=1,
@@ -174,14 +174,14 @@ index 1111111..2222222 100644
         est_llm_calls=2,
         repo_owner="some-org", repo_name="some-repo",
         diff_text="""diff --git a/LICENSE b/LICENSE
-index 1111111..2222222 100644
---- a/LICENSE
-+++ b/LICENSE
-@@ -1,5 +1,5 @@
--MIT License
-+GNU GENERAL PUBLIC LICENSE
-+Version 3, 29 June 2007
-""",
+            index 1111111..2222222 100644
+            --- a/LICENSE
+            +++ b/LICENSE
+            @@ -1,5 +1,5 @@
+            -MIT License
+            +GNU GENERAL PUBLIC LICENSE
+            +Version 3, 29 June 2007
+            """,
         changed_files=["LICENSE"],
         expect_intent_in=["license_change"],
     ),
@@ -193,14 +193,14 @@ index 1111111..2222222 100644
         est_llm_calls=0,
         repo_owner="some-org", repo_name="some-repo",
         diff_text="""diff --git a/src/utils.js b/src/utils.js
-index abc1234..def5678 100644
---- a/src/utils.js
-+++ b/src/utils.js
-@@ -12,7 +12,7 @@ function formatDate(date) {
--  return date.toISOString().split('T')[0];
-+  return date.toISOString().slice(0, 10);
- }
-""",
+            index abc1234..def5678 100644
+            --- a/src/utils.js
+            +++ b/src/utils.js
+            @@ -12,7 +12,7 @@ function formatDate(date) {
+            -  return date.toISOString().split('T')[0];
+            +  return date.toISOString().slice(0, 10);
+            }
+            """,
         changed_files=["src/utils.js"],
         expect_no_llm_call=True,
         expect_short_circuit_before_research=True,
@@ -214,16 +214,16 @@ index abc1234..def5678 100644
         est_llm_calls=2,
         repo_owner="lodash", repo_name="lodash",
         diff_text="""diff --git a/package-lock.json b/package-lock.json
-index aaaaaaa..bbbbbbb 100644
---- a/package-lock.json
-+++ b/package-lock.json
-@@ -1200,8 +1200,8 @@
-     "node_modules/lodash": {
-       "version": "4.17.21",
--      "integrity": "sha512-oldhashvalueoldhashvalueoldhashvalue=="
-+      "integrity": "sha512-newhashvaluenewhashvaluenewhashvalue=="
-     }
-""",
+            index aaaaaaa..bbbbbbb 100644
+            --- a/package-lock.json
+            +++ b/package-lock.json
+            @@ -1200,8 +1200,8 @@
+                "node_modules/lodash": {
+                "version": "4.17.21",
+            -      "integrity": "sha512-oldhashvalueoldhashvalueoldhashvalue=="
+            +      "integrity": "sha512-newhashvaluenewhashvaluenewhashvalue=="
+                }
+            """,
         changed_files=["package-lock.json"],
         # No fixed intent expectation — either no_relevant_changes or a
         # correctly-reasoned version_bump would be acceptable; what matters
@@ -238,18 +238,18 @@ index aaaaaaa..bbbbbbb 100644
         est_llm_calls=1,  # Triage only; orchestrator short-circuits before Synthesis
         repo_owner="some-org", repo_name="some-repo",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/pack
-@@ -8,11 +8,7 @@
-   "dependencies": {
--    "some-pkg": "^
-+    "some-pkg": "workspace:*"
-     <<<<<<< HEAD
--    "other-thing": "1.2
-+    "other-thing":
-     =======
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/pack
+            @@ -8,11 +8,7 @@
+            "dependencies": {
+            -    "some-pkg": "^
+            +    "some-pkg": "workspace:*"
+                <<<<<<< HEAD
+            -    "other-thing": "1.2
+            +    "other-thing":
+                =======
+            """,
         changed_files=["package.json"],
         expect_unable_to_assess=True,
     ),
@@ -261,15 +261,15 @@ index 1234567..89abcde 100644
         est_llm_calls=2,
         repo_owner="nobody", repo_name="doesnt-exist-xyz-123",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/package.json
-@@ -10,7 +10,7 @@
-   "dependencies": {
--    "lodash": "^4.17.20",
-+    "lodash": "^4.17.21",
-   }
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -10,7 +10,7 @@
+            "dependencies": {
+            -    "lodash": "^4.17.20",
+            +    "lodash": "^4.17.21",
+            }
+            """,
         changed_files=["package.json"],
         expect_unable_to_assess=True,
     ),
@@ -281,15 +281,15 @@ index 1234567..89abcde 100644
         est_llm_calls=2,
         repo_owner="lodash", repo_name="lodash",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/package.json
-@@ -10,7 +10,7 @@
-   "dependencies": {
--    "totally-fake-package-xyz-123": "^1.0.0",
-+    "totally-fake-package-xyz-123": "^2.0.0",
-   }
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -10,7 +10,7 @@
+            "dependencies": {
+            -    "totally-fake-package-xyz-123": "^1.0.0",
+            +    "totally-fake-package-xyz-123": "^2.0.0",
+            }
+            """,
         changed_files=["package.json"],
         # Should NOT be unable_to_assess — get_risk_score's internal license
         # fallback absorbs the deps.dev 404, still returns a score.
@@ -306,14 +306,14 @@ index 1234567..89abcde 100644
         # this test; we're checking whether adding a GPL-family package is
         # correctly flagged against a declared MIT project_license.
         diff_text="""diff --git a/package.json b/package.json
-index 1111111..2222222 100644
---- a/package.json
-+++ b/package.json
-@@ -5,3 +5,4 @@
-   "dependencies": {
-+    "readline": "^1.3.0",
-   }
-""",
+            index 1111111..2222222 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -5,3 +5,4 @@
+            "dependencies": {
+            +    "readline": "^1.3.0",
+            }
+            """,
         changed_files=["package.json"],
         project_license="MIT",
         expect_intent_in=["new_dependency"],
@@ -332,17 +332,17 @@ index 1111111..2222222 100644
         est_llm_calls=2,
         repo_owner="lodash", repo_name="lodash",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/package.json
-@@ -10,8 +10,8 @@
-   "dependencies": {
--    "lodash": "^4.17.20",
-+    "lodash": "^4.17.21",
--    "axios": "^0.21.1",
-+    "axios": "^1.6.0",
-   }
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -10,8 +10,8 @@
+            "dependencies": {
+            -    "lodash": "^4.17.20",
+            +    "lodash": "^4.17.21",
+            -    "axios": "^0.21.1",
+            +    "axios": "^1.6.0",
+            }
+            """,
         changed_files=["package.json"],
         expect_min_affected_packages=2,
         expect_unable_to_assess=False,
@@ -355,15 +355,15 @@ index 1234567..89abcde 100644
         est_llm_calls=2,
         repo_owner="some-org", repo_name="some-repo",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/package.json
-@@ -10,7 +10,7 @@
-   "dependencies": {
--    "lodash": "^4.17.21",
-+    "lodash": "^4.17.15",
-   }
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -10,7 +10,7 @@
+            "dependencies": {
+            -    "lodash": "^4.17.21",
+            +    "lodash": "^4.17.15",
+            }
+            """,
         changed_files=["package.json"],
         expect_intent_in=["version_bump"],
         expect_min_affected_packages=1,
@@ -376,15 +376,15 @@ index 1234567..89abcde 100644
         est_llm_calls=2,
         repo_owner="some-org", repo_name="some-repo",
         diff_text="""diff --git a/requirements.txt b/requirements.txt
-index 1111111..2222222 100644
---- a/requirements.txt
-+++ b/requirements.txt
-@@ -1,4 +1,4 @@
- flask==2.3.2
--requests==2.31.0
-+httpx==0.27.0
- sqlalchemy==2.0.19
-""",
+            index 1111111..2222222 100644
+            --- a/requirements.txt
+            +++ b/requirements.txt
+            @@ -1,4 +1,4 @@
+            flask==2.3.2
+            -requests==2.31.0
+            +httpx==0.27.0
+            sqlalchemy==2.0.19
+            """,
         changed_files=["requirements.txt"],
         expect_min_affected_packages=1,  # at minimum the added package should be captured
     ),
@@ -418,15 +418,15 @@ index 1111111..2222222 100644
         est_llm_calls=2,
         repo_owner="lodash", repo_name="lodash",
         diff_text="""diff --git a/package.json b/package.json
-index 1234567..89abcde 100644
---- a/package.json
-+++ b/package.json
-@@ -8,7 +8,7 @@
-   "dependencies": {
--    "lodash":    "^4.17.21",
-+    "lodash": "^4.17.21",
-   }
-""",
+            index 1234567..89abcde 100644
+            --- a/package.json
+            +++ b/package.json
+            @@ -8,7 +8,7 @@
+            "dependencies": {
+            -    "lodash":    "^4.17.21",
+            +    "lodash": "^4.17.21",
+            }
+            """,
         changed_files=["package.json"],
         # Expect it to correctly recognize no real change occurred, similar
         # spirit to the lockfile-churn case but purely whitespace this time.

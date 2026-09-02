@@ -84,6 +84,20 @@ async def test_maintenance_health_caveat_present_when_it_is_the_driver(agent):
 
     output = await agent.run(_triage_result([pkg_ref]), research_result)
 
+    # If the LLM call itself failed (e.g. quota exhaustion), SynthesisAgent
+    # falls back to its deterministic templated recommendation by design
+    # (see Step 2.3) — that fallback never contains the LLM-authored caveat
+    # phrasing, since it isn't LLM-generated. Skip rather than fail in that
+    # case: this test is meant to validate LLM prompt-following behavior,
+    # not to re-detect quota exhaustion (run_evals.py's quota detection
+    # already covers that separately).
+    if output.recommendation.startswith("Overall risk:"):
+        pytest.skip(
+            "Synthesis fell back to templated recommendation (LLM call "
+            "failed, likely quota exhaustion) — cannot validate caveat "
+            "phrasing without a real LLM response. Re-run once quota resets."
+        )
+
     # Confirms the model actually states the caveat, not just that the
     # prompt asked it to — this is real LLM output, not the prompt text.
     recommendation_lower = output.recommendation.lower()
@@ -113,3 +127,26 @@ async def test_unable_to_assess_when_all_packages_failed(agent):
     assert output.unable_to_assess is True
     assert output.unable_to_assess_reason  # non-empty, per the blank-reason fix
     assert "broken-pkg" in output.unable_to_assess_reason
+
+
+@pytest.mark.asyncio
+async def test_unable_to_assess_message_is_accurate_when_no_packages_identified(agent):
+    # Regression test: previously this branch said "upstream triage may
+    # have failed" even though an empty package_results list can ONLY mean
+    # Triage correctly found zero packages (e.g. a license_change with no
+    # associated dependency) — ResearchResult.package_results is built 1:1
+    # from TriageResult.affected_packages, so this was never actually a
+    # Triage failure signal.
+    triage_result = TriageResult(
+        intent=TriageIntent.LICENSE_CHANGE, confidence=1.0, reasoning="test",
+        affected_packages=[],
+    )
+    research_result = ResearchResult(package_results=[])
+
+    output = await agent.run(triage_result, research_result)
+
+    assert output.risk_level == SynthesisRiskLevel.UNABLE_TO_ASSESS
+    assert output.unable_to_assess is True
+    reason_lower = output.unable_to_assess_reason.lower()
+    assert "failed" not in reason_lower  # the old, misleading wording
+    assert "license_change" in reason_lower

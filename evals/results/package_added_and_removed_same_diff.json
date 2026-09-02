@@ -1,0 +1,24 @@
+{
+  "case_id": "package_added_and_removed_same_diff",
+  "description": "One package added, a different one removed, in the same diff.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "UNABLE_TO_ASSESS",
+    "affected_packages": [
+      "httpx",
+      "requests"
+    ],
+    "recommendation": "Unable to assess risk: all package checks failed.",
+    "unable_to_assess": true,
+    "unable_to_assess_reason": "httpx: Maintenance check failed: some-org/some-repo not found or not public | requests: Maintenance check failed: some-org/some-repo not found or not public",
+    "raw_agent_trace_id": "e3a633a0-fa7b-4ef1-bc81-2e7cb14d4c58",
+    "generated_at": "2026-09-01T14:52:59.594386Z"
+  },
+  "checks": {
+    "min_affected_packages": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 7.233114582952112
+}

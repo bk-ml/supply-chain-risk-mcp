@@ -1,0 +1,24 @@
+{
+  "case_id": "gpl_dependency_into_mit_project",
+  "description": "Adding a copyleft-licensed dependency to an MIT project \u2014 tests license-conflict detection.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "LOW",
+    "affected_packages": [
+      "readline"
+    ],
+    "recommendation": "The overall dependency risk level is LOW, driven primarily by maintenance-health metrics associated with the `readline` package. Please note that this maintenance-health data reflects the health of this repository itself rather than the upstream maintenance status of the `readline` project. Consider verifying package configuration and repository health checks before merging.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "87de2273-d229-44a1-a2e3-fda35c0b6f0f",
+    "generated_at": "2026-09-01T09:50:17.089083Z"
+  },
+  "checks": {
+    "unable_to_assess": true,
+    "intent_in": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 13.806819458026439
+}

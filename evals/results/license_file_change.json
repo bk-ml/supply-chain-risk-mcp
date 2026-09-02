@@ -1,0 +1,21 @@
+{
+  "case_id": "license_file_change",
+  "description": "LICENSE file itself changed (MIT to GPL text swap).",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "UNABLE_TO_ASSESS",
+    "affected_packages": [],
+    "recommendation": "Unable to assess risk: all package checks failed.",
+    "unable_to_assess": true,
+    "unable_to_assess_reason": "No packages were available to research (upstream triage may have failed).",
+    "raw_agent_trace_id": "849c3bbd-5dc5-4b58-936e-c12e4609707e",
+    "generated_at": "2026-09-01T08:02:10.149463Z"
+  },
+  "checks": {
+    "intent_in": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 3.21342858299613
+}

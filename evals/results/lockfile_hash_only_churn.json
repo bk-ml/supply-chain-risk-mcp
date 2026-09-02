@@ -1,0 +1,21 @@
+{
+  "case_id": "lockfile_hash_only_churn",
+  "description": "Lockfile integrity hash changed with no real version change \u2014 tests Triage precision on ambiguous input.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "NOT_APPLICABLE",
+    "affected_packages": [],
+    "recommendation": "No dependency-relevant changes detected in this PR.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "5bb4e609-0f33-4114-b701-eeb938ae6dcf",
+    "generated_at": "2026-09-01T08:02:26.891026Z"
+  },
+  "checks": {
+    "unable_to_assess": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 16.74079087516293
+}

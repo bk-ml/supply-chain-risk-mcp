@@ -1,0 +1,24 @@
+{
+  "case_id": "garbled_diff_low_confidence",
+  "description": "Deliberately truncated/garbled diff with merge-conflict markers \u2014 tests the low-confidence refusal guardrail.",
+  "guardrail": "low_confidence_refusal",
+  "est_llm_calls": 1,
+  "output": {
+    "risk_level": "UNABLE_TO_ASSESS",
+    "affected_packages": [
+      "some-pkg",
+      "other-thing"
+    ],
+    "recommendation": "Unable to confidently classify this change.",
+    "unable_to_assess": true,
+    "unable_to_assess_reason": "Triage confidence 0.30 below threshold 0.50",
+    "raw_agent_trace_id": "dfe4fcce-bb35-4c12-b875-63ee579a5fe2",
+    "generated_at": "2026-09-01T09:49:30.208503Z"
+  },
+  "checks": {
+    "unable_to_assess": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 12.013471624813974
+}

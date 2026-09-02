@@ -1,0 +1,24 @@
+{
+  "case_id": "new_dependency_maven",
+  "description": "New Maven (Java) dependency added.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "LOW",
+    "affected_packages": [
+      "com.google.guava:guava"
+    ],
+    "recommendation": "The overall dependency risk for this pull request is LOW, driven primarily by a license conflict associated with `com.google.guava:guava`. Please review the license details for `com.google.guava:guava` to ensure compliance with your project's legal policies before merging.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "4ad449e5-a4a7-4cdb-a4d4-f594a3406724",
+    "generated_at": "2026-09-01T08:02:06.934843Z"
+  },
+  "checks": {
+    "min_affected_packages": true,
+    "intent_in": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 17.33762766700238
+}

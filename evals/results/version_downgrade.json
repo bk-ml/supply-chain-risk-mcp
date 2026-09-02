@@ -1,0 +1,24 @@
+{
+  "case_id": "version_downgrade",
+  "description": "Version DECREASED rather than increased \u2014 edge case for extraction and reasoning.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "UNABLE_TO_ASSESS",
+    "affected_packages": [
+      "lodash"
+    ],
+    "recommendation": "Unable to assess risk: all package checks failed.",
+    "unable_to_assess": true,
+    "unable_to_assess_reason": "lodash: Maintenance check failed: some-org/some-repo not found or not public",
+    "raw_agent_trace_id": "ddd6899f-8a03-4b97-b85e-b100274fcbc4",
+    "generated_at": "2026-09-01T09:51:23.911445Z"
+  },
+  "checks": {
+    "min_affected_packages": true,
+    "intent_in": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 16.330526707693934
+}

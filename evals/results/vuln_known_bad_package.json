@@ -1,0 +1,26 @@
+{
+  "case_id": "vuln_known_bad_package",
+  "description": "Real package (lodash) with well-known unpatched vulnerabilities, version bump.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "HIGH",
+    "affected_packages": [
+      "lodash"
+    ],
+    "recommendation": "The overall dependency risk for this pull request is HIGH, driven primarily by an unpatched vulnerability in lodash. Please review the security impact and consider updating or pinning to a patched version before merging.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "7f1fc27c-d867-42d0-b107-0a5005949697",
+    "generated_at": "2026-09-01T07:33:52.368963Z"
+  },
+  "checks": {
+    "unable_to_assess": true,
+    "risk_level_in": true,
+    "min_affected_packages": true,
+    "intent_in": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 13.302556457929313
+}

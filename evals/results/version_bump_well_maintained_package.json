@@ -1,0 +1,25 @@
+{
+  "case_id": "version_bump_well_maintained_package",
+  "description": "Real, actively-maintained package (express) minor version bump \u2014 expect lower risk.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "MEDIUM",
+    "affected_packages": [
+      "express"
+    ],
+    "recommendation": "This pull request presents a MEDIUM overall dependency risk, driven primarily by an unpatched vulnerability identified in the `express` package. Please review the security impact of this issue on your project before proceeding. Consider applying a mitigation or temporarily utilizing a patched alternative for `express` prior to merging.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "984fed94-a136-4ca9-bcd1-426df827f589",
+    "generated_at": "2026-09-01T07:34:11.775606Z"
+  },
+  "checks": {
+    "unable_to_assess": true,
+    "min_affected_packages": true,
+    "intent_in": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 19.405589249916375
+}

@@ -79,15 +79,29 @@ class SynthesisAgent:
         unassessed = [p for p in research_result.package_results if p.risk_score is None]
 
         if not assessed:
-            reason = (
-                self._summarize_failures(research_result.package_results)
-                if research_result.package_results
-                else "No packages were available to research (upstream triage may have failed)."
-            )
+            if research_result.package_results:
+                # Packages existed but every one failed its research call —
+                # a genuine tool/infrastructure failure.
+                reason = self._summarize_failures(research_result.package_results)
+            else:
+                # No packages were ever identified — this is NOT a Triage
+                # failure. ResearchResult.package_results is built 1:1 from
+                # TriageResult.affected_packages, so an empty list here can
+                # only mean Triage correctly found zero packages (e.g. a
+                # license_change with no associated dependency). Say so
+                # accurately rather than implying something went wrong.
+                reason = (
+                    f"No specific packages required research for this change "
+                    f"(intent: {triage_result.intent.value})."
+                )
             return SynthesisOutput(
                 risk_level=SynthesisRiskLevel.UNABLE_TO_ASSESS,
                 affected_packages=[p.package_ref.name for p in research_result.package_results],
-                recommendation="Unable to assess risk: all package checks failed.",
+                recommendation=(
+                    "Unable to assess risk: all package checks failed."
+                    if research_result.package_results
+                    else "No dependency-level risk to assess for this change."
+                ),
                 unable_to_assess=True,
                 unable_to_assess_reason=reason,
             )
