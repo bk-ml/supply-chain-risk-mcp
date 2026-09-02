@@ -6,16 +6,16 @@
   "output": {
     "risk_level": "UNABLE_TO_ASSESS",
     "affected_packages": [],
-    "recommendation": "Unable to assess risk: all package checks failed.",
+    "recommendation": "No dependency-level risk to assess for this change.",
     "unable_to_assess": true,
-    "unable_to_assess_reason": "No packages were available to research (upstream triage may have failed).",
-    "raw_agent_trace_id": "849c3bbd-5dc5-4b58-936e-c12e4609707e",
-    "generated_at": "2026-09-01T08:02:10.149463Z"
+    "unable_to_assess_reason": "No specific packages required research for this change (intent: license_change).",
+    "raw_agent_trace_id": "f1398bc5-3025-49ca-aac4-6338fd813ba6",
+    "generated_at": "2026-09-02T07:09:29.042675Z"
   },
   "checks": {
     "intent_in": true
   },
   "passed": true,
   "error": null,
-  "latency_seconds": 3.21342858299613
+  "latency_seconds": 3.918449040967971
 }

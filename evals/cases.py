@@ -374,7 +374,12 @@ CASES: list[EvalCase] = [
         description="One package added, a different one removed, in the same diff.",
         guardrail=None,
         est_llm_calls=2,
-        repo_owner="some-org", repo_name="some-repo",
+        repo_owner="pallets", repo_name="flask",  # real repo — needed since
+        # we assert unable_to_assess=False below; the original "some-org/
+        # some-repo" placeholder 404s on GitHub, which silently produced
+        # UNABLE_TO_ASSESS while still passing, because no check was
+        # actually verifying the full pipeline succeeded (only Triage
+        # extraction was checked). Found via a real eval run, not review.
         diff_text="""diff --git a/requirements.txt b/requirements.txt
             index 1111111..2222222 100644
             --- a/requirements.txt
@@ -387,6 +392,7 @@ CASES: list[EvalCase] = [
             """,
         changed_files=["requirements.txt"],
         expect_min_affected_packages=1,  # at minimum the added package should be captured
+        expect_unable_to_assess=False,
     ),
 
     EvalCase(
