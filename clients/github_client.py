@@ -93,15 +93,16 @@ async def get_repo_health(owner: str, repo: str, token: str | None = None) -> Re
             raise GitHubAPIError(f"Network error contacting GitHub: {e}") from e
 
         _check_rate_limit(repo_resp)
+        
+        if repo_resp.status_code == 404:
+            raise RepoNotFoundError(f"{owner}/{repo} not found or not public")
+        if repo_resp.status_code >= 400:
+            raise GitHubAPIError(f"GitHub returned status {repo_resp.status_code}: {repo_resp.text}")
         if repo_resp.status_code >= 300:
             raise GitHubAPIError(
                 f"Unexpected status {repo_resp.status_code} for {owner}/{repo} "
                 f"(after redirect handling): {repo_resp.text}"
             )
-        if repo_resp.status_code == 404:
-            raise RepoNotFoundError(f"{owner}/{repo} not found or not public")
-        if repo_resp.status_code >= 400:
-            raise GitHubAPIError(f"GitHub returned status {repo_resp.status_code}: {repo_resp.text}")
 
         repo_data = repo_resp.json()
 
