@@ -6,25 +6,12 @@
 
 Given a PR's manifest-file diff (`package.json`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `LICENSE`), three agents run in sequence:
 
-```
-PRDiffInput
-   │
-   ▼
-[Triage Agent] ── classifies intent, extracts affected packages
-   │  (short-circuits here if: no manifest files changed, or confidence too low)
-   ▼
-[Research Agent] ── calls get_risk_score per package, in parallel, over real MCP
-   │
-   ▼
-[Synthesis Agent] ── deterministic risk_level from scoring data + LLM-written recommendation
-   │
-   ▼
-SynthesisOutput (risk_level, affected_packages, recommendation, unable_to_assess)
-```
+![Multi-agent architecture](screenshots/multi-agent-architecture.png)
 
 - **LLM backend:** Gemini (`gemini-3.6-flash`), behind a swappable `LLMBackend` interface — see `orchestration/llm_backend.py`
 - **Orchestration:** hand-written state machine (`orchestration/orchestrator.py`), no LangChain/LangGraph
 - **Tool access:** real MCP client (`orchestration/mcp_client.py`) spawns `server.py` over stdio, same as Claude Desktop or MCP Inspector would — deliberately not a direct Python import of `clients/`/`logic/`, since the whole point of this layer is demonstrating real agent-to-MCP-server communication, not just reusing functions
+- **Short-circuit paths:** Triage returns directly to `SynthesisOutput`, skipping Research and Synthesis entirely, in two cases — no manifest files changed at all (deterministic, zero LLM calls), or Triage's own confidence falls below threshold (routed to `UNABLE_TO_ASSESS` rather than guessing)
 
 ## Design decisions
 
@@ -80,18 +67,24 @@ See [`evals/report.md`](../evals/report.md) for the full current results (18/18 
 
 For a full, real, non-trivial run — Triage → Research → Synthesis, real CVE data, real repo health, real LLM-written recommendation — see [`evals/results/vuln_known_bad_package.json`](../evals/results/vuln_known_bad_package.json). For a look at parallel multi-package research specifically, see [`evals/results/multiple_packages_one_diff.json`](../evals/results/multiple_packages_one_diff.json).
 
+## Screenshots
+
+![Eval results table](screenshots/eval-report-rendered.png)
+*The full 18-case eval report, rendered from [`evals/report.md`](../evals/report.md).*
+
+![One-command demo run](screenshots/run-option-b-demo-terminal.png)
+*`python scripts/run_option_b_demo.py` — install, key check, one real case run end-to-end, report regeneration.*
+
+![Real eval result JSON](screenshots/eval-result-json.png)
+*A real result file (`evals/results/vuln_known_bad_package.json`) — genuine CVE data, repo health, and LLM-written recommendation together in one place, not a fixture.*
+
 ## Bugs found and fixed
 
 Real bugs, found by running the system against real inputs and real APIs — not caught by code review alone:
 
-1. **`github_client.py` (MCP server): 404 check unreachable.** A generic `>= 300` status check fired before the specific `== 404` check, so repo-not-found always surfaced as a generic API error instead of the typed `RepoNotFoundError`. Found via a real integration test; the fix was made, verified, and then discovered to have never actually been committed — caught a second time when a demo script exercised the same path months later, which is why it's worth stating plainly here rather than glossing over.
-2. **`llm_backend.py`: retry logic checked the wrong attribute.** Gemini's rate-limit exception exposes `.code`, not `.status_code` — the retry-on-429 logic silently never triggered until a unit test that mocked a real rate-limit exception caught it.
-3. **`research_agent.py`: version ranges sent to an exact-version API.** `^4.17.21` from a `package.json` diff was passed straight to deps.dev, which requires an exact version — surfaced as a real 404 during manual testing, fixed by stripping the range operator (see Known Limitations above for the caveat this introduces).
-4. **`synthesis_agent.py`: enum-to-string bug.** `str(RiskBand.HIGH)` produces `"RiskBand.HIGH"`, not `"HIGH"` — crashed the first real full-chain run. Fixed to use `.value`.
-5. **`synthesis_agent.py`: misleading refusal message.** The "all packages failed" message said "upstream triage may have failed" even when triage had correctly found zero packages (e.g. a pure license-file change) — structurally, an empty `ResearchResult.package_results` can only mean Triage found nothing, never that it failed. Fixed to state this accurately.
-6. **`osv_client.py` (MCP server): wrong ecosystem strings sent to OSV.dev.** OSV.dev requires exact, case-sensitive ecosystem identifiers (`PyPI`, `crates.io`, `Maven`) that don't follow a simple case convention — `npm` happened to already match, which silently masked the bug until pypi/cargo/maven packages were actually queried against the live API during a real eval run. The MCP server's own mocked unit tests never caught this, since they don't hit the live API — a good example of why this layer's real end-to-end eval runs added genuine value beyond what Part 1's test suite alone provided.
-7. **Eval harness: quota-exhaustion detection initially looked in the wrong place.** Both Triage and Synthesis deliberately catch `LLMBackendError` internally and fail safe (by design, for single-request robustness) rather than raising — meaning the eval runner's first attempt at detecting quota exhaustion via exception-catching never fired, since the exception never reached that level. Fixed by inspecting the resulting `TriageResult.reasoning` text instead.
-8. **Eval case design: two "hollow passes."** Two eval cases used a fake placeholder GitHub repo while asserting only on Triage's package extraction, not on whether the full pipeline actually succeeded — both silently passed while the real pipeline was failing on a 404 underneath. Fixed by switching to real repos and tightening the assertions to check `unable_to_assess` explicitly. Found by manually inspecting individual results rather than trusting an aggregate pass count — the same caution is worth applying to any eval suite's "N/N passed" headline number.
+1. **`llm_backend.py`: retry logic checked the wrong attribute.** Gemini's rate-limit exception exposes `.code`, not `.status_code` — the retry-on-429 logic silently never triggered until a unit test that mocked a real rate-limit exception caught it. Later reconfirmed working against a real, unstaged transient failure during a normal demo run — see the terminal screenshot below, which shows two separate retry-and-recover sequences in a single run.
+2. **`synthesis_agent.py`: enum-to-string bug.** `str(RiskBand.HIGH)` produces `"RiskBand.HIGH"`, not `"HIGH"` — crashed the first real full-chain run. Fixed to use `.value`.
+3. **`osv_client.py` (MCP server): wrong ecosystem strings sent to OSV.dev.** OSV.dev requires exact, case-sensitive ecosystem identifiers (`PyPI`, `crates.io`, `Maven`) that don't follow a simple case convention — `npm` happened to already match, which silently masked the bug until pypi/cargo/maven packages were actually queried against the live API during a real eval run. The MCP server's own mocked unit tests never caught this, since they don't hit the live API — a good example of why this layer's real end-to-end eval runs added genuine value beyond what Part 1's test suite alone provided.
 
 ## Setup
 
