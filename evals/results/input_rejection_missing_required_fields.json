@@ -1,0 +1,12 @@
+{
+  "case_id": "input_rejection_missing_required_fields",
+  "description": "Malformed PRDiffInput missing required fields \u2014 tests input validation guardrail at the schema level, before any agent runs.",
+  "guardrail": "input_rejection",
+  "est_llm_calls": 0,
+  "checks": {
+    "input_rejected": true
+  },
+  "rejection_error": "2 validation errors for PRDiffInput\nrepo_owner\n  Field required [type=missing, input_value={'diff_text': 'some diff'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nrepo_name\n  Field required [type=missing, input_value={'diff_text': 'some diff'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing",
+  "latency_seconds": 4.3833162635564804e-05,
+  "passed": true
+}

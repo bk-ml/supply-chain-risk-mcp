@@ -1,0 +1,22 @@
+{
+  "case_id": "no_relevant_changes_code_only",
+  "description": "Only application code changed, no manifest files \u2014 should short-circuit with zero LLM calls.",
+  "guardrail": null,
+  "est_llm_calls": 0,
+  "output": {
+    "risk_level": "NOT_APPLICABLE",
+    "affected_packages": [],
+    "recommendation": "No dependency-relevant changes detected in this PR.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "cec583b1-6ffe-4ea3-871f-bcc01bdd0258",
+    "generated_at": "2026-09-01T08:02:10.149979Z"
+  },
+  "checks": {
+    "intent_in": true,
+    "no_llm_call_expected": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 4.524970427155495e-05
+}

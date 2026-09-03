@@ -1,0 +1,24 @@
+{
+  "case_id": "new_dependency_cargo",
+  "description": "New Cargo (Rust) dependency added.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "LOW",
+    "affected_packages": [
+      "rand"
+    ],
+    "recommendation": "The overall dependency risk for this pull request is LOW, driven primarily by an unpatched vulnerability in the `rand` package. We recommend reviewing the vulnerability advisory for `rand` to evaluate potential impact and considering a safe alternative or fix before merging.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "be35d7bd-9756-43c1-8ecc-e18cba5ab829",
+    "generated_at": "2026-09-01T08:01:49.595559Z"
+  },
+  "checks": {
+    "min_affected_packages": true,
+    "intent_in": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 17.415187290869653
+}

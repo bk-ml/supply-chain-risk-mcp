@@ -5,8 +5,23 @@ from clients.osv_client import (
     OSVAPIError,
     RateLimitError,
     query_vulnerabilities,
+    _normalize_ecosystem_for_osv
 )
 
+def test_normalize_ecosystem_maps_known_names():
+    assert _normalize_ecosystem_for_osv("npm") == "npm"
+    assert _normalize_ecosystem_for_osv("pypi") == "PyPI"
+    assert _normalize_ecosystem_for_osv("cargo") == "crates.io"
+    assert _normalize_ecosystem_for_osv("maven") == "Maven"
+ 
+ 
+def test_normalize_ecosystem_is_case_insensitive_on_input():
+    assert _normalize_ecosystem_for_osv("PyPI") == "PyPI"
+    assert _normalize_ecosystem_for_osv("PYPI") == "PyPI"
+ 
+ 
+def test_normalize_ecosystem_passes_through_unknown_unchanged():
+    assert _normalize_ecosystem_for_osv("some-unknown-ecosystem") == "some-unknown-ecosystem"
 
 @pytest.mark.asyncio
 async def test_query_returns_empty_when_no_vulnerabilities(mocker):
@@ -63,3 +78,36 @@ async def test_unexpected_error_status_raises_generic_exception(mocker):
 
     with pytest.raises(OSVAPIError):
         await query_vulnerabilities("any-package", "npm")
+ 
+ 
+@pytest.mark.asyncio
+async def test_query_vulnerabilities_sends_osv_canonical_ecosystem_string(mocker):
+    captured_body = {}
+ 
+    async def fake_post(self, url, json=None):
+        captured_body.update(json)
+        return httpx.Response(200, json={"vulns": []}, request=httpx.Request("POST", url))
+ 
+    mocker.patch("httpx.AsyncClient.post", fake_post)
+ 
+    await query_vulnerabilities("pyjwt", "pypi", "2.8.0")
+ 
+    # This is the actual regression check: the request body sent to OSV.dev
+    # must use OSV's canonical "PyPI", not our internal lowercase "pypi".
+    assert captured_body["package"]["ecosystem"] == "PyPI"
+ 
+ 
+@pytest.mark.asyncio
+async def test_query_vulnerabilities_result_preserves_original_ecosystem_string(mocker):
+    async def fake_post(self, url, json=None):
+        return httpx.Response(200, json={"vulns": []}, request=httpx.Request("POST", url))
+ 
+    mocker.patch("httpx.AsyncClient.post", fake_post)
+ 
+    result = await query_vulnerabilities("pyjwt", "pypi", "2.8.0")
+ 
+    # The result's ecosystem field should reflect OUR naming convention
+    # (lowercase "pypi"), not OSV's translated "PyPI" — downstream code
+    # (PackageRef, Research/Synthesis Agents) expects our own convention.
+    assert result.ecosystem == "pypi"
+ 

@@ -1,0 +1,23 @@
+{
+  "case_id": "nonexistent_package_real_repo",
+  "description": "Package doesn't exist on npm, but the PR's own repo is real \u2014 tests partial-result isolation, not total failure.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "LOW",
+    "affected_packages": [
+      "totally-fake-package-xyz-123"
+    ],
+    "recommendation": "The overall dependency risk for this PR is LOW, driven primarily by maintenance-health metrics for `totally-fake-package-xyz-123`. Please note that this maintenance-health assessment reflects the health of this pull request's repository, not the upstream health of the dependency itself. You can safely proceed with merging after verifying the package meets your project's needs.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "60b536a6-633d-46dd-8305-933c420bcd10",
+    "generated_at": "2026-09-01T09:50:03.280786Z"
+  },
+  "checks": {
+    "unable_to_assess": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 28.326216500252485
+}

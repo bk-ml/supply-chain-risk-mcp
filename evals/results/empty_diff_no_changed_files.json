@@ -1,0 +1,22 @@
+{
+  "case_id": "empty_diff_no_changed_files",
+  "description": "No changed_files at all \u2014 should short-circuit cleanly, not error.",
+  "guardrail": null,
+  "est_llm_calls": 0,
+  "output": {
+    "risk_level": "NOT_APPLICABLE",
+    "affected_packages": [],
+    "recommendation": "No dependency-relevant changes detected in this PR.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "10a64f8c-8d96-41a7-a154-2bf1e596093b",
+    "generated_at": "2026-09-01T14:52:59.595983Z"
+  },
+  "checks": {
+    "intent_in": true,
+    "no_llm_call_expected": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 5.425000563263893e-05
+}

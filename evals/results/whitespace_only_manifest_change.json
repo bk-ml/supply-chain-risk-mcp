@@ -1,0 +1,21 @@
+{
+  "case_id": "whitespace_only_manifest_change",
+  "description": "Manifest file changed but only whitespace/formatting, no real dependency change.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "NOT_APPLICABLE",
+    "affected_packages": [],
+    "recommendation": "No dependency-relevant changes detected in this PR.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "547f9fe2-6c39-4ca5-8ab5-257f88a668c5",
+    "generated_at": "2026-09-02T05:49:58.571508Z"
+  },
+  "checks": {
+    "unable_to_assess": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 2.9359799581579864
+}

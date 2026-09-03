@@ -10,15 +10,23 @@ dependencies = [
     "python-dotenv>=1.0.0",
 ]
 
+[project.optional-dependencies]
+agents = [
+    "google-genai",
+]
+
 [project.scripts]
 supply-chain-risk-mcp = "server:main"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 pythonpath = ["."]
+markers = [
+    "integration: slow tests that spawn real processes and hit live network APIs",
+]
 
 [tool.setuptools]
-packages = ["clients", "logic"]
+packages = ["clients", "logic", "agents", "orchestration", "evals"]
 py-modules = ["server"]
 
 [build-system]

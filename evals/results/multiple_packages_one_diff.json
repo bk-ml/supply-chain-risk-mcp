@@ -1,0 +1,25 @@
+{
+  "case_id": "multiple_packages_one_diff",
+  "description": "Two packages changed in the same PR \u2014 tests parallel Research Agent calls.",
+  "guardrail": null,
+  "est_llm_calls": 2,
+  "output": {
+    "risk_level": "HIGH",
+    "affected_packages": [
+      "lodash",
+      "axios"
+    ],
+    "recommendation": "This PR carries a HIGH dependency risk level, driven primarily by unpatched vulnerabilities in both lodash and axios. Please review these dependencies and consider pinning to patched versions or using alternative packages before merging.",
+    "unable_to_assess": false,
+    "unable_to_assess_reason": null,
+    "raw_agent_trace_id": "919bb9db-7fe2-49e9-9124-9a6ee4b7f08b",
+    "generated_at": "2026-09-01T09:51:07.579945Z"
+  },
+  "checks": {
+    "unable_to_assess": true,
+    "min_affected_packages": true
+  },
+  "passed": true,
+  "error": null,
+  "latency_seconds": 50.48931054119021
+}
