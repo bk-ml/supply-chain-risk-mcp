@@ -27,9 +27,10 @@ python scripts/run_option_b_demo.py
 
 See [`docs/mcp-server.md`](docs/mcp-server.md) and [`docs/multi-agent-layer.md`](docs/multi-agent-layer.md) for full setup instructions, tool/architecture details, and everything else.
 
-## Pristine Part 1 snapshot
+## Tagged milestones
 
-The [`v1-mcp-server`](../../releases/tag/v1-mcp-server) git tag points to the exact commit where Part 1 stood complete, before any multi-agent work began — `git checkout v1-mcp-server` to see it in complete isolation, unmodified by anything that came after.
+- [`v1-mcp-server`](../../releases/tag/v1-mcp-server) — Part 1 complete, standalone, before any multi-agent work began. `git checkout v1-mcp-server` to see it in complete isolation.
+- [`v2-multi-agent-system`](../../releases/tag/v2-multi-agent-system) — the full project complete: MCP server + multi-agent PR reviewer, merged, with the 18-case eval suite passing. `git checkout v2-multi-agent-system` for the final combined state.
 
 ## Repo layout
 
